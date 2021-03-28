@@ -5,6 +5,7 @@ import AppColor from '../libs/AppColor';
 
 export interface Props {
 	value: string;
+	handlePress: () => {};
 }
 
 const screenHeight = Math.min(Dimensions.get('screen').width, Dimensions.get('screen').height);
@@ -31,10 +32,13 @@ const styles = StyleSheet.create({
 	},
 });
 
-const Button: React.FC<Props> = ({ value }) => {
+const Button: React.FC<Props> = ({ value, onPress: handlePress }) => {
 	const isDarkMode = useColorScheme() === 'dark';
 	return (
-		<TouchableOpacity style={[styles.button, isDarkMode && { backgroundColor: 'gray', borderColor: 'yellow' }]}>
+		<TouchableOpacity
+			style={[styles.button, isDarkMode && { backgroundColor: 'gray', borderColor: 'yellow' }]}
+			onPress={handlePress}
+		>
 			<Text style={[styles.buttonText, isDarkMode && { color: 'gold' }]}>{value}</Text>
 		</TouchableOpacity>
 	);
@@ -42,6 +46,7 @@ const Button: React.FC<Props> = ({ value }) => {
 
 Button.propTypes = {
 	value: PropTypes.string.isRequired,
+	handlePress: PropTypes.func.isRequired,
 };
 
 export default Button;
