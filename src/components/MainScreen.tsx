@@ -86,7 +86,7 @@ const MainScreen: React.FC = () => {
 			프레스/롱프레스하면 다이얼로그 띄워서
 			디스플레이된 값을 복사하거나, 
 			클립보드 값을 붙여넣을 수 있도록 기능 제공 */
-		console.log('currentValue: ', currentValue);
+		// console.log('currentValue: ', currentValue);
 		// setCurrentValue(currentValue?.concat(value));
 	};
 

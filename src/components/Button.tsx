@@ -5,7 +5,6 @@ import AppColor from '../libs/AppColor';
 
 export interface Props {
 	value: string;
-	handlePress: () => {};
 }
 
 const screenHeight = Math.min(Dimensions.get('screen').width, Dimensions.get('screen').height);
@@ -46,7 +45,7 @@ const Button: React.FC<Props> = ({ value, onPress: handlePress }) => {
 
 Button.propTypes = {
 	value: PropTypes.string.isRequired,
-	handlePress: PropTypes.func.isRequired,
+	onPress: PropTypes.func.isRequired,
 };
 
 export default Button;
