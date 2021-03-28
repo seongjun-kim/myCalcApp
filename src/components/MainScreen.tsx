@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, Dimensions, useColorScheme, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, useColorScheme, TouchableOpacity } from 'react-native';
 import AppColor from '../libs/AppColor';
+import { applyThousandSeparator } from '../libs/Util';
 import Button from './Button';
 
 // const screenHeight = Dimensions.get('screen').height;
@@ -76,7 +77,9 @@ const MainScreen: React.FC = () => {
 				}
 				break;
 			default:
-				setCurrentValue(currentValue?.concat(value));
+				if (currentValue.length < 9) {
+					setCurrentValue(currentValue?.concat(value));
+				}
 				break;
 		}
 	};
@@ -93,20 +96,22 @@ const MainScreen: React.FC = () => {
 	return (
 		<View style={styles.root}>
 			<View style={styles.header}>
-				<ScrollView style={[styles.display, isDarkMode && { backgroundColor: 'black', borderColor: 'yellow' }]}>
-					<TouchableOpacity onPress={handlePressDisplay} onLongPress={handlePressDisplay}>
-						<Text
-							// multiline
-							// selectable="true"
-							style={[
-								styles.displayText,
-								isDarkMode && { backgroundColor: 'black', borderColor: 'yellow', color: 'white' },
-							]}
-						>
-							{currentValue}
-						</Text>
-					</TouchableOpacity>
-				</ScrollView>
+				<TouchableOpacity
+					style={[styles.display, isDarkMode && { backgroundColor: 'black', borderColor: 'yellow' }]}
+					onPress={handlePressDisplay}
+					onLongPress={handlePressDisplay}
+				>
+					<Text
+						// multiline
+						// selectable="true"
+						style={[
+							styles.displayText,
+							isDarkMode && { backgroundColor: 'black', borderColor: 'yellow', color: 'white' },
+						]}
+					>
+						{applyThousandSeparator(currentValue)}
+					</Text>
+				</TouchableOpacity>
 				<Button onPress={() => handlePressButton('R')} value="R" />
 			</View>
 
