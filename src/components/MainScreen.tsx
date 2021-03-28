@@ -1,15 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, useColorScheme } from 'react-native';
 import AppColor from '../libs/AppColor';
-import Button from './Button.tsx';
+import Button from './Button';
 
 // const screenHeight = Dimensions.get('screen').height;
 const screenHeight = Math.min(Dimensions.get('screen').width, Dimensions.get('screen').height);
-const rowHeight = screenHeight / 5;
+const rowHeight = screenHeight / 6;
 
 const styles = StyleSheet.create({
 	root: {
-		// flex: 1,
 		padding: 10,
 		alignItems: 'center',
 		alignSelf: 'center',
@@ -21,45 +20,35 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'center',
 		flexDirection: 'row',
-	},
-	displayContainer: {
-		flex: 1,
-		height: rowHeight,
-		flexDirection: 'row',
+		marginHorizontal: 10,
 	},
 	display: {
 		flex: 3,
-		marginRight: 10,
-		height: rowHeight,
+		minHeight: rowHeight,
 		backgroundColor: 'white',
 		borderWidth: 2,
-		borderRadius: 10,
+		borderRadius: 5,
+		marginHorizontal: 10,
 		borderColor: AppColor.button.border,
 	},
 	keypadArea: {
 		flex: 4,
-		marginTop: 30,
-		alignItems: 'center',
-		alignSelf: 'center',
-		flexWrap: 'wrap',
 	},
 	keypadRow: {
-		flex: 1,
 		alignItems: 'center',
 		alignSelf: 'center',
 		flexDirection: 'row',
-		flexWrap: 'wrap',
 	},
 });
 
 const MainScreen: React.FC = () => {
+	const isDarkMode = useColorScheme() === 'dark';
+
 	return (
 		<View style={styles.root}>
 			<View style={styles.header}>
-				<View style={styles.displayContainer}>
-					<View style={styles.display} />
-					<Button value="R" />
-				</View>
+				<View style={[styles.display, isDarkMode && { backgroundColor: 'black', borderColor: 'yellow' }]} />
+				<Button value="R" />
 			</View>
 
 			<View style={styles.keypadArea}>
