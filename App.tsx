@@ -7,27 +7,11 @@
  */
 
 import React from 'react';
-import type { Node } from 'react';
+import type { Node } from 'typescript';
 import { SafeAreaView, StatusBar, StyleSheet, useColorScheme } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import MainScreen from './src/components/MainScreen';
-
-const App: () => Node = () => {
-	const isDarkMode = useColorScheme() === 'dark';
-
-	const backgroundStyle = {
-		flex: 1,
-		backgroundColor: isDarkMode ? Colors.darker : 'white',
-	};
-
-	return (
-		<SafeAreaView style={backgroundStyle}>
-			<StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-			<MainScreen />
-		</SafeAreaView>
-	);
-};
 
 const styles = StyleSheet.create({
 	sectionContainer: {
@@ -47,5 +31,21 @@ const styles = StyleSheet.create({
 		fontWeight: '700',
 	},
 });
+
+const App: () => Node = () => {
+	const isDarkMode = useColorScheme() === 'dark';
+
+	const backgroundStyle = {
+		flex: 1,
+		backgroundColor: isDarkMode ? Colors.darker : 'white',
+	};
+
+	return (
+		<SafeAreaView style={backgroundStyle}>
+			<StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+			<MainScreen />
+		</SafeAreaView>
+	);
+};
 
 export default App;

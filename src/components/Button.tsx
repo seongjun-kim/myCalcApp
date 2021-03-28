@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 import AppColor from '../libs/AppColor';
 
 export interface Props {
@@ -9,16 +10,6 @@ export interface Props {
 // const screenHeight = Dimensions.get('screen').height;
 const screenHeight = Math.min(Dimensions.get('screen').width, Dimensions.get('screen').height);
 const rowHeight = screenHeight / 5;
-
-const Button: React.FC<Props> = (props) => {
-	return (
-		<View style={styles.buttonContainer}>
-			<TouchableOpacity style={styles.button}>
-				<Text style={styles.buttonText}>{props.value}</Text>
-			</TouchableOpacity>
-		</View>
-	);
-};
 
 const styles = StyleSheet.create({
 	buttonContainer: {
@@ -45,5 +36,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 });
+
+const Button: React.FC<Props> = ({ value }) => {
+	return (
+		<View style={styles.buttonContainer}>
+			<TouchableOpacity style={styles.button}>
+				<Text style={styles.buttonText}>{value}</Text>
+			</TouchableOpacity>
+		</View>
+	);
+};
+
+Button.propTypes = {
+	value: PropTypes.string.isRequired,
+};
 
 export default Button;
