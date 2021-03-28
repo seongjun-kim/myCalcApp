@@ -98,7 +98,10 @@ const MainScreen: React.FC = () => {
 						<Text
 							// multiline
 							// selectable="true"
-							style={[styles.displayText, isDarkMode && { backgroundColor: 'black', borderColor: 'yellow' }]}
+							style={[
+								styles.displayText,
+								isDarkMode && { backgroundColor: 'black', borderColor: 'yellow', color: 'white' },
+							]}
 						>
 							{currentValue}
 						</Text>
