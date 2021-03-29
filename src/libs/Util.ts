@@ -8,8 +8,10 @@ export function getThousandsGroupRegex(): RegExp {
 
 export function applyThousandSeparator(str: string): string {
 	// [TEMP] 소숫점 아래 자리 콤마 구분을 피하기 위해 임시 설정
-	if (str.indexOf('.') > 0) return str;
-
+	const dotIndex = str.indexOf('.');
+	if (dotIndex > 0) {
+		return str.substr(0, dotIndex + 6);
+	}
 	const thousandsGroupRegex = getThousandsGroupRegex();
 	let index = str.search(/[1-9]/);
 	index = index === -1 ? str.length : index;

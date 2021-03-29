@@ -74,7 +74,7 @@ const MainScreen: React.FC = () => {
 
 	const handleOperation = (value) => {
 		setCalcMode(value);
-		resultStore.setResult(parseInt(currentValue, 10));
+		resultStore.setResult(parseFloat(currentValue));
 		setCurrentValue('');
 		setNextValue('0');
 	};
@@ -83,9 +83,9 @@ const MainScreen: React.FC = () => {
 		const { result: priorValue } = resultStore;
 
 		// '=' 버튼을 통한 반복 연산을 위한 값
-		let reuseValue = parseInt(currentValue, 10);
+		let reuseValue = parseFloat(currentValue);
 		if (nextValue > 0) {
-			reuseValue = parseInt(nextValue, 10);
+			reuseValue = parseFloat(nextValue);
 		}
 		setNextValue(reuseValue);
 
@@ -114,7 +114,7 @@ const MainScreen: React.FC = () => {
 				switch (calcMode) {
 					case '+':
 						res = (priorValue + reuseValue).toString();
-						if (res.length > 10) {
+						if (res > MAX_VALUE) {
 							res = MAX_VALUE;
 
 							Toast.show({
@@ -126,7 +126,7 @@ const MainScreen: React.FC = () => {
 							});
 						}
 						setCurrentValue(res);
-						resultStore.setResult(priorValue + reuseValue);
+						resultStore.setResult(res);
 						break;
 					case '-':
 						setCurrentValue((priorValue - reuseValue).toString());
@@ -134,7 +134,7 @@ const MainScreen: React.FC = () => {
 						break;
 					case 'x':
 						res = (priorValue * reuseValue).toString();
-						if (res.length > 10) {
+						if (res > MAX_VALUE) {
 							res = MAX_VALUE;
 
 							Toast.show({
@@ -146,7 +146,7 @@ const MainScreen: React.FC = () => {
 							});
 						}
 						setCurrentValue(res);
-						resultStore.setResult(priorValue * reuseValue);
+						resultStore.setResult(res);
 						break;
 					case '÷':
 						setCurrentValue((priorValue / reuseValue).toString());
