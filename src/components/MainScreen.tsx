@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useObserver } from 'mobx-react-lite';
-import { StyleSheet, View, Text, Dimensions, useColorScheme, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, useColorScheme, TouchableOpacity, Platform } from 'react-native';
 import AppColor from '../libs/AppColor';
 import { applyThousandSeparator } from '../libs/Util';
 import Button from './Button';
@@ -34,6 +34,20 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginBottom: 20,
 		borderColor: AppColor.button.border,
+		...Platform.select({
+			ios: {
+				shadowColor: 'rgb(50, 50, 50)',
+				shadowOpacity: 0.3,
+				shadowRadius: 5,
+				shadowOffset: {
+					height: -1,
+					width: 0,
+				},
+			},
+			android: {
+				elevation: 3,
+			},
+		}),
 	},
 	displayText: {
 		textAlign: 'right',

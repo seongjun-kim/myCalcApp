@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Dimensions, TouchableOpacity, useColorScheme } from 'react-native';
+import { StyleSheet, Text, Dimensions, TouchableOpacity, useColorScheme, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import AppColor from '../libs/AppColor';
 
@@ -22,6 +22,20 @@ const styles = StyleSheet.create({
 		borderColor: AppColor.button.border,
 		justifyContent: 'center',
 		alignItems: 'center',
+		...Platform.select({
+			ios: {
+				shadowColor: 'rgb(50, 50, 50)',
+				shadowOpacity: 0.3,
+				shadowRadius: 5,
+				shadowOffset: {
+					height: -1,
+					width: 0,
+				},
+			},
+			android: {
+				elevation: 3,
+			},
+		}),
 	},
 	buttonText: {
 		fontSize: 35,
