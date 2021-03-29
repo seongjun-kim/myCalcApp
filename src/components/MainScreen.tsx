@@ -126,7 +126,7 @@ const MainScreen: React.FC = () => {
 							});
 						}
 						setCurrentValue(res);
-						resultStore.setResult(res);
+						resultStore.setResult(priorValue + reuseValue);
 						break;
 					case '-':
 						setCurrentValue((priorValue - reuseValue).toString());
@@ -146,7 +146,7 @@ const MainScreen: React.FC = () => {
 							});
 						}
 						setCurrentValue(res);
-						resultStore.setResult(res);
+						resultStore.setResult(priorValue + reuseValue);
 						break;
 					case '÷':
 						setCurrentValue((priorValue / reuseValue).toString());
