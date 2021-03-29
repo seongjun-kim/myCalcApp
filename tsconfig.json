@@ -1,12 +1,15 @@
 {
     "compilerOptions": {
 	  "jsx": "react",
-        //   "outDir": "./dist",
-      "rootDir": "./",
-      /* Experimental Options */
-      "experimentalDecorators": true, 
-      "emitDecoratorMetadata": true, 
-      /* Advanced Options */
-      "forceConsistentCasingInFileNames": true 
+    //   "outDir": "./dist",
+    "rootDir": "./",
+    /* Experimental Options */
+    "experimentalDecorators": true, 
+    "emitDecoratorMetadata": true, 
+    /* Advanced Options */
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
     }
   }

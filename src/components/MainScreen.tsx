@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useObserver } from 'mobx-react-lite';
 import { StyleSheet, View, Text, Dimensions, useColorScheme, TouchableOpacity, Platform } from 'react-native';
+import Toast from 'react-native-toast-message';
 import AppColor from '../libs/AppColor';
 import { applyThousandSeparator } from '../libs/Util';
 import Button from './Button';
-import resultStore from '../../store/resultStore';
+import resultStore from '../store/resultStore';
 
+const MAX_VALUE = '9999999999';
 // const screenHeight = Dimensions.get('screen').height;
 const screenHeight = Math.min(Dimensions.get('screen').width, Dimensions.get('screen').height);
 const rowHeight = screenHeight / 6;
@@ -78,6 +80,18 @@ const MainScreen: React.FC = () => {
 	};
 
 	const handlePressButton = (value) => {
+		const { result: priorValue } = resultStore;
+
+		// '=' 버튼을 통한 반복 연산을 위한 값
+		let reuseValue = parseInt(currentValue, 10);
+		if (nextValue > 0) {
+			reuseValue = parseInt(nextValue, 10);
+		}
+		setNextValue(reuseValue);
+
+		// 최대치 초과 제한을 위한 임시 변수
+		let res;
+
 		switch (value) {
 			case 'R':
 				setCurrentValue('0');
@@ -97,31 +111,46 @@ const MainScreen: React.FC = () => {
 				handleOperation(value);
 				break;
 			case '=':
-				const { result: priorValue } = resultStore;
-
-				let _nextValue = parseInt(currentValue, 10);
-				if (nextValue > 0) {
-					_nextValue = parseInt(nextValue, 10);
-				}
-				// 다음 반복 연산을 위한 값 저장
-				setNextValue(_nextValue);
-
 				switch (calcMode) {
 					case '+':
-						setCurrentValue((priorValue + _nextValue).toString());
-						resultStore.setResult(priorValue + _nextValue);
+						res = (priorValue + reuseValue).toString();
+						if (res.length > 10) {
+							res = MAX_VALUE;
+
+							Toast.show({
+								type: 'error',
+								position: 'bottom',
+								autoHide: true,
+								text1: 'Hello',
+								text2: '계산 가능 범위(~9,999,999,999)를 초과했습니다.',
+							});
+						}
+						setCurrentValue(res);
+						resultStore.setResult(priorValue + reuseValue);
 						break;
 					case '-':
-						setCurrentValue((priorValue - _nextValue).toString());
-						resultStore.setResult(priorValue - _nextValue);
+						setCurrentValue((priorValue - reuseValue).toString());
+						resultStore.setResult(priorValue - reuseValue);
 						break;
 					case 'x':
-						setCurrentValue((priorValue * _nextValue).toString());
-						resultStore.setResult(priorValue * _nextValue);
+						res = (priorValue * reuseValue).toString();
+						if (res.length > 10) {
+							res = MAX_VALUE;
+
+							Toast.show({
+								type: 'error',
+								position: 'bottom',
+								autoHide: true,
+								text1: '결과값 초과',
+								text2: '계산 가능 범위(~9,999,999,999)를 초과했습니다.',
+							});
+						}
+						setCurrentValue(res);
+						resultStore.setResult(priorValue * reuseValue);
 						break;
 					case '÷':
-						setCurrentValue((priorValue / _nextValue).toString());
-						resultStore.setResult(priorValue / _nextValue);
+						setCurrentValue((priorValue / reuseValue).toString());
+						resultStore.setResult(priorValue / reuseValue);
 						break;
 					default:
 						break;
@@ -136,11 +165,13 @@ const MainScreen: React.FC = () => {
 					}
 				}
 				break;
-			case '0':
-				if (currentValue === '0') break;
+			// case '0':
 			default:
-				if (currentValue === '0') setCurrentValue(value);
-				else if (currentValue.length < 9) {
+				// '0'의 연속입력 방지
+				if (currentValue === '0' && value === '0') break;
+				// '0'만 입력된 상황일 경우, 0을 입력된 값으로 변경
+				else if (currentValue === '0') setCurrentValue(value);
+				else if (currentValue.length < 10) {
 					setCurrentValue(currentValue?.concat(value));
 				}
 				break;

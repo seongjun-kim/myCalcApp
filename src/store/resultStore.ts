@@ -1,7 +1,7 @@
 import { makeObservable, observable, action } from 'mobx';
 
 class ResultStore {
-	@observable result: number = 0;
+	@observable result = 0;
 
 	constructor() {
 		makeObservable(this);

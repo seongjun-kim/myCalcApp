@@ -9,8 +9,9 @@
 import React from 'react';
 import type { Node } from 'typescript';
 import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
+import Toast from 'react-native-toast-message';
 import MainScreen from './components/MainScreen';
-import StoreProvider from '../store';
+import StoreProvider from './store';
 
 const App: () => Node = () => {
 	const isDarkMode = useColorScheme() === 'dark';
@@ -24,6 +25,7 @@ const App: () => Node = () => {
 			<SafeAreaView style={backgroundStyle}>
 				<StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 				<MainScreen />
+				<Toast ref={(ref) => Toast.setRef(ref)} />
 			</SafeAreaView>
 		</StoreProvider>
 	);
