@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { memo, useContext } from 'react';
 import { StyleSheet, Text, Dimensions, TouchableOpacity, useColorScheme, Platform } from 'react-native';
+// import Toast from 'react-native-toast-message';
 import PropTypes from 'prop-types';
+import { Context } from '../store';
 import AppColor from '../libs/AppColor';
 
 export interface Props {
@@ -45,21 +47,30 @@ const styles = StyleSheet.create({
 	},
 });
 
-const Button: React.FC<Props> = ({ value, onPress: handlePress }) => {
+const Button: React.FC<Props> = ({ value }) => {
 	const isDarkMode = useColorScheme() === 'dark';
+	const { contextDispatch } = useContext(Context);
+	const handlePress = () => {
+		contextDispatch({ value });
+	};
 	return (
 		<TouchableOpacity
-			style={[styles.button, isDarkMode && { backgroundColor: 'gray', borderColor: 'yellow' }]}
+			style={[
+				styles.button,
+				isDarkMode && { backgroundColor: 'gray', borderColor: 'yellow' },
+				value === '.' && { backgroundColor: 'lightgray', borderColor: 'lightgray' },
+			]}
 			onPress={handlePress}
 		>
-			<Text style={[styles.buttonText, isDarkMode && { color: 'gold' }]}>{value}</Text>
+			<Text style={[styles.buttonText, isDarkMode && { color: 'gold' }, value === '.' && { color: 'gray' }]}>
+				{value}
+			</Text>
 		</TouchableOpacity>
 	);
 };
 
 Button.propTypes = {
 	value: PropTypes.string.isRequired,
-	onPress: PropTypes.func.isRequired,
 };
 
-export default Button;
+export default memo(Button);

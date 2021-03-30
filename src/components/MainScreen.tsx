@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import { useObserver } from 'mobx-react-lite';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, Dimensions, useColorScheme, TouchableOpacity, Platform } from 'react-native';
-import Toast from 'react-native-toast-message';
+import { Context } from '../store';
 import AppColor from '../libs/AppColor';
 import { applyThousandSeparator } from '../libs/Util';
 import Button from './Button';
-import resultStore from '../store/resultStore';
 
-const MAX_VALUE = '9999999999';
 // const screenHeight = Dimensions.get('screen').height;
 const screenHeight = Math.min(Dimensions.get('screen').width, Dimensions.get('screen').height);
 const rowHeight = screenHeight / 6;
@@ -68,115 +65,7 @@ const styles = StyleSheet.create({
 
 const MainScreen: React.FC = () => {
 	const isDarkMode = useColorScheme() === 'dark';
-	const [currentValue, setCurrentValue] = useState('0');
-	const [nextValue, setNextValue] = useState('0');
-	const [calcMode, setCalcMode] = useState('+');
-
-	const handleOperation = (value) => {
-		setCalcMode(value);
-		resultStore.setResult(parseFloat(currentValue));
-		setCurrentValue('');
-		setNextValue('0');
-	};
-
-	const handlePressButton = (value) => {
-		const { result: priorValue } = resultStore;
-
-		// '=' 버튼을 통한 반복 연산을 위한 값
-		let reuseValue = parseFloat(currentValue);
-		if (nextValue > 0) {
-			reuseValue = parseFloat(nextValue);
-		}
-		setNextValue(reuseValue);
-
-		// 최대치 초과 제한을 위한 임시 변수
-		let res;
-
-		switch (value) {
-			case 'R':
-				setCurrentValue('0');
-				setNextValue('0');
-				resultStore.setResult(0);
-				break;
-			case '+':
-				handleOperation(value);
-				break;
-			case '-':
-				handleOperation(value);
-				break;
-			case 'x':
-				handleOperation(value);
-				break;
-			case '÷':
-				handleOperation(value);
-				break;
-			case '=':
-				switch (calcMode) {
-					case '+':
-						res = (priorValue + reuseValue).toString();
-						if (res > MAX_VALUE) {
-							res = MAX_VALUE;
-
-							Toast.show({
-								type: 'error',
-								position: 'bottom',
-								autoHide: true,
-								text1: 'Hello',
-								text2: '계산 가능 범위(~9,999,999,999)를 초과했습니다.',
-							});
-						}
-						setCurrentValue(res);
-						resultStore.setResult(priorValue + reuseValue);
-						break;
-					case '-':
-						setCurrentValue((priorValue - reuseValue).toString());
-						resultStore.setResult(priorValue - reuseValue);
-						break;
-					case 'x':
-						res = (priorValue * reuseValue).toString();
-						if (res > MAX_VALUE) {
-							res = MAX_VALUE;
-
-							Toast.show({
-								type: 'error',
-								position: 'bottom',
-								autoHide: true,
-								text1: '결과값 초과',
-								text2: '계산 가능 범위(~9,999,999,999)를 초과했습니다.',
-							});
-						}
-						setCurrentValue(res);
-						resultStore.setResult(priorValue + reuseValue);
-						break;
-					case '÷':
-						setCurrentValue((priorValue / reuseValue).toString());
-						resultStore.setResult(priorValue / reuseValue);
-						break;
-					default:
-						break;
-				}
-				break;
-			case '.':
-				if (currentValue.indexOf('.') < 0) {
-					if (currentValue.length === 0) {
-						setCurrentValue('0.');
-					} else {
-						setCurrentValue(currentValue?.concat(value));
-					}
-				}
-				break;
-			// case '0':
-			default:
-				// '0'의 연속입력 방지
-				if (currentValue === '0' && value === '0') break;
-				// '0'만 입력된 상황일 경우, 0을 입력된 값으로 변경
-				else if (currentValue === '0') setCurrentValue(value);
-				else if (currentValue.length < 10) {
-					setCurrentValue(currentValue?.concat(value));
-				}
-				break;
-		}
-	};
+	const { currentValue } = useContext(Context);
 
 	const handlePressDisplay = () => {
 		/*  [TODO] 디스플레이 입력 박스
@@ -187,56 +76,54 @@ const MainScreen: React.FC = () => {
 		// setCurrentValue(currentValue?.concat(value));
 	};
 
-	return useObserver(() => {
-		return (
-			<View style={styles.root}>
-				<View style={styles.header}>
-					<TouchableOpacity
-						style={[styles.display, isDarkMode && { backgroundColor: 'black', borderColor: 'yellow' }]}
-						onPress={handlePressDisplay}
-						onLongPress={handlePressDisplay}
+	return (
+		<View style={styles.root}>
+			<View style={styles.header}>
+				<TouchableOpacity
+					style={[styles.display, isDarkMode && { backgroundColor: 'black', borderColor: 'yellow' }]}
+					onPress={handlePressDisplay}
+					onLongPress={handlePressDisplay}
+				>
+					<Text
+						style={[
+							styles.displayText,
+							isDarkMode && { backgroundColor: 'black', borderColor: 'yellow', color: 'white' },
+						]}
 					>
-						<Text
-							style={[
-								styles.displayText,
-								isDarkMode && { backgroundColor: 'black', borderColor: 'yellow', color: 'white' },
-							]}
-						>
-							{applyThousandSeparator(currentValue)}
-						</Text>
-					</TouchableOpacity>
-					<Button onPress={() => handlePressButton('R')} value="R" />
-				</View>
+						{applyThousandSeparator(currentValue)}
+					</Text>
+				</TouchableOpacity>
+				<Button value="R" />
+			</View>
 
-				<View style={styles.keypadArea}>
-					<View style={styles.keypadRow}>
-						<Button onPress={() => handlePressButton('1')} value="1" />
-						<Button onPress={() => handlePressButton('2')} value="2" />
-						<Button onPress={() => handlePressButton('3')} value="3" />
-						<Button onPress={() => handlePressButton('+')} value="+" />
-					</View>
-					<View style={styles.keypadRow}>
-						<Button onPress={() => handlePressButton('4')} value="4" />
-						<Button onPress={() => handlePressButton('5')} value="5" />
-						<Button onPress={() => handlePressButton('6')} value="6" />
-						<Button onPress={() => handlePressButton('-')} value="-" />
-					</View>
-					<View style={styles.keypadRow}>
-						<Button onPress={() => handlePressButton('7')} value="7" />
-						<Button onPress={() => handlePressButton('8')} value="8" />
-						<Button onPress={() => handlePressButton('9')} value="9" />
-						<Button onPress={() => handlePressButton('x')} value="x" />
-					</View>
-					<View style={styles.keypadRow}>
-						<Button onPress={() => handlePressButton('.')} value="." />
-						<Button onPress={() => handlePressButton('0')} value="0" />
-						<Button onPress={() => handlePressButton('=')} value="=" />
-						<Button onPress={() => handlePressButton('÷')} value="÷" />
-					</View>
+			<View style={styles.keypadArea}>
+				<View style={styles.keypadRow}>
+					<Button value="1" />
+					<Button value="2" />
+					<Button value="3" />
+					<Button value="+" />
+				</View>
+				<View style={styles.keypadRow}>
+					<Button value="4" />
+					<Button value="5" />
+					<Button value="6" />
+					<Button value="-" />
+				</View>
+				<View style={styles.keypadRow}>
+					<Button value="7" />
+					<Button value="8" />
+					<Button value="9" />
+					<Button value="x" />
+				</View>
+				<View style={styles.keypadRow}>
+					<Button value="." />
+					<Button value="0" />
+					<Button value="=" />
+					<Button value="÷" />
 				</View>
 			</View>
-		);
-	});
+		</View>
+	);
 };
 
 export default MainScreen;
